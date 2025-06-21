@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Celestial - Student Dashboard</title>
+    <style>
+        /* --- Universal Styles & Fonts --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --color-primary: #7380ec;
+            --color-danger: #ff7782;
+            --color-success: #41f1b6;
+            --color-warning: #ffbb55;
+            --color-white: #fff;
+            --color-info-dark: #7d8da1;
+            --color-dark: #363949;
+            --color-light: rgba(132, 139, 200, 0.18);
+            --color-background: #f6f6f9;
+            --color-text-muted: #677483;
+
+            --card-border-radius: 1.5rem;
+            --border-radius-1: 0.5rem;
+            --border-radius-2: 1rem;
+
+            --card-padding: 1.8rem;
+            --padding-1: 1.2rem;
+            
+            --box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            outline: 0;
+            appearance: none;
+            border: 0;
+            text-decoration: none;
+            list-style: none;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 14px;
+        }
+
+        body {
+            width: 100vw;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.88rem;
+            background-color: var(--color-background);
+            overflow-x: hidden;
+            color: var(--color-dark);
+            position: relative;
+            padding-top: 80px; /* Space for the fixed header */
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-container svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        /* --- Heavenly Background Animation (Light) --- */
+        #aurora-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .aurora-layer {
+            position: absolute;
+            opacity: 0;
+            border-radius: 50%;
+            animation: aurora-glow 30s infinite ease-in-out;
+        }
+
+        .aurora-layer-1 {
+            width: 60vmax;
+            height: 60vmax;
+            background: radial-gradient(circle, rgba(115, 128, 236, 0.2) 0%, rgba(115, 128, 236, 0) 70%);
+            top: -20%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .aurora-layer-2 {
+            width: 50vmax;
+            height: 50vmax;
+            background: radial-gradient(circle, rgba(65, 241, 182, 0.2) 0%, rgba(65, 241, 182, 0) 70%);
+            bottom: -25%;
+            right: -15%;
+            animation-delay: 7s;
+        }
+
+        .aurora-layer-3 {
+            width: 70vmax;
+            height: 70vmax;
+            background: radial-gradient(circle, rgba(255, 187, 85, 0.15) 0%, rgba(255, 187, 85, 0) 65%);
+            bottom: 5%;
+            left: 20%;
+            animation-delay: 14s;
+        }
+        
+        @keyframes aurora-glow {
+            0%, 100% { transform: scale(0.9) translate(0, 0); opacity: 0.4; }
+            50% { transform: scale(1.2) translate(20px, -20px); opacity: 0.6; }
+        }
+        
+        /* Main Layout */
+        .container {
+            display: grid;
+            width: 96%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 2rem;
+            grid-template-columns: 360px auto;
+            padding: 1rem 0; /* Adjusted padding */
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--card-border-radius);
+            box-shadow: var(--box-shadow);
+            transition: all 0.4s ease;
+        }
+
+        .glass-panel:hover {
+            box-shadow: 0 1.5rem 4rem rgba(132, 139, 200, 0.2);
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            color: var(--color-dark);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        h2 { color: var(--color-primary); margin-bottom: 1.5rem; text-align: center; font-size: 1.5rem; }
+
+        /* Left Panel (Form) */
+        .left-panel {
+            padding: var(--card-padding);
+            animation: slideInLeft 1s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .form-group { position: relative; margin-bottom: 1.5rem; }
+
+        .form-group input {
+            background: var(--color-light);
+            border-radius: var(--border-radius-1);
+            padding: var(--padding-1);
+            width: 100%;
+            color: var(--color-dark);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .form-group input:focus {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 15px rgba(115, 128, 236, 0.3);
+        }
+        
+        button#form-btn {
+            background: linear-gradient(45deg, var(--color-primary), var(--color-success));
+            color: var(--color-white);
+            border-radius: var(--border-radius-2);
+            padding: var(--padding-1) 0;
+            width: 100%;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        button#form-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Right Panel (Table) */
+        main { animation: slideInRight 1s ease-out; }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .student-list { width: 100%; padding: var(--card-padding); }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            color: var(--color-info-dark);
+            text-transform: uppercase;
+            padding-bottom: 1rem;
+            text-align: left;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--color-light);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: var(--color-light);
+        }
+
+        tbody tr.highlight-row { animation: highlight 2s ease-out; }
+
+        @keyframes highlight {
+            0% { background: rgba(65, 241, 182, 0.3); }
+            100% { background: transparent; }
+        }
+
+        tbody tr.fly-out { animation: flyOut 0.8s ease-in forwards; }
+        
+        @keyframes flyOut {
+            0% { opacity: 1; transform: translateY(0) rotate(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) rotate(15deg) scale(0.5); }
+        }
+
+        tbody td { padding: 1.2rem var(--padding-1); color: var(--color-text-muted); }
+
+        .action-btn {
+            background: transparent;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: transform 0.2s, filter 0.2s;
+            padding: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn svg { width: 20px; height: 20px; }
+        .edit-btn svg { fill: var(--color-warning); }
+        .delete-btn svg { fill: var(--color-danger); }
+        .action-btn:hover { transform: scale(1.2); }
+        
+        /* --- FLYING ANIMATION OBJECTS --- */
+        .flying-orb {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, var(--color-success) 0%, rgba(65, 241, 182, 0) 70%);
+            border-radius: 50%;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0;
+            transition: top 1s cubic-bezier(0.25, 1, 0.5, 1), left 1s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.5s ease-out;
+        }
+        
+        .particle-stream .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: var(--color-warning);
+            border-radius: 50%;
+            animation: particle-fly 1s ease-out forwards;
+        }
+
+        @keyframes particle-fly {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        
+        .particle-stream { position: fixed; z-index: 1000; pointer-events: none; }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            body { padding-top: 70px; }
+            header { padding: 0 1rem; }
+            .site-title { font-size: 1.2rem; }
+            .logo-container svg { width: 30px; height: 30px; }
+
+            .container { 
+                grid-template-columns: 1fr; 
+                width: 94%; 
+                padding-top: 1rem;
+            }
+            .left-panel { margin-bottom: 2rem; }
+            h1 { font-size: 2.2rem; text-align: center; }
+            h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#7380ec;"/>
+                        <stop offset="100%" style="stop-color:#41f1b6;"/>
+                    </linearGradient>
+                </defs>
+                <path fill="url(#logo-gradient)" d="M50,5A45,45,0,0,1,95,50c0,15-10,25-20,30-5,2.5-10,5-10,10,0,2.5,2.5,5,5,5s5-2.5,5-5c0-10,10-17.5,20-22.5,12.5-6.25,20-17.5,20-32.5A50,50,0,0,0,50,0,50,50,0,0,0,0,50c0,15,7.5,26.25,20,32.5,10,5,20,12.5,20,22.5,0,2.5,2.5,5,5,5s5-2.5,5-5c0-5-5-7.5-10-10-10-5-20-15-20-30A45,45,0,0,1,50,5Z"/>
+            </svg>
+            <span class="site-title">Academia Celestial</span>
+        </div>
+    </header>
+
+    <div id="aurora-background">
+        <div class="aurora-layer aurora-layer-1"></div>
+        <div class="aurora-layer aurora-layer-2"></div>
+        <div class="aurora-layer aurora-layer-3"></div>
+    </div>
+
+    <div class="container">
+        <!-- =========== LEFT PANEL =========== -->
+        <aside class="left-panel glass-panel">
+            <div class="form-container">
+                <h2 id="form-title">Add New Student</h2>
+                <form id="student-form">
+                    <input type="hidden" id="student-id">
+                    <div class="form-group"><input type="text" id="name" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" id="regNo" placeholder="Registration No." required></div>
+                    <div class="form-group"><input type="text" id="dept" placeholder="Department (e.g., CSE)" required></div>
+                    <div class="form-group"><input type="number" id="year" placeholder="Year (e.g., 2)" required></div>
+                    <div class="form-group"><input type="number" id="marks" placeholder="Total Marks (%)" required></div>
+                    <button type="submit" id="form-btn">Add Student</button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- =========== MAIN CONTENT =========== -->
+        <main>
+            <h1>Student Dashboard</h1>
+            <div class="student-list glass-panel">
+                <h2>Current Students</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Reg No</th>
+                            <th>Dept</th>
+                            <th>Year</th>
+                            <th>Marks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="student-table-body"></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const studentForm = document.getElementById('student-form');
+            const studentTableBody = document.getElementById('student-table-body');
+            const formBtn = document.getElementById('form-btn');
+            const studentIdInput = document.getElementById('student-id');
+            const formTitle = document.getElementById('form-title');
+
+            // --- ANIMATION HELPERS ---
+            function createFlyingOrb(startX, startY, endX, endY, onComplete) {
+                const orb = document.createElement('div');
+                orb.className = 'flying-orb';
+                document.body.appendChild(orb);
+
+                orb.style.left = `${startX}px`;
+                orb.style.top = `${startY}px`;
+
+                requestAnimationFrame(() => {
+                    orb.style.opacity = '1';
+                    orb.style.transform = 'scale(1.5)';
+                });
+
+                setTimeout(() => {
+                    orb.style.left = `${endX}px`;
+                    orb.style.top = `${endY}px`;
+                    orb.style.transform = 'scale(0.2)';
+                    orb.style.opacity = '0.5';
+                }, 100);
+
+                orb.addEventListener('transitionend', () => {
+                    orb.remove();
+                    if (onComplete) onComplete();
+                });
+            }
+
+            function createParticleStream(startX, startY, endX, endY, onComplete) {
+                const container = document.createElement('div');
+                container.className = 'particle-stream';
+                document.body.appendChild(container);
+
+                for (let i = 0; i < 20; i++) {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    container.appendChild(p);
+                    const angle = Math.random() * Math.PI * 2;
+                    const radius = Math.random() * 30;
+                    const pStartX = startX + Math.cos(angle) * radius;
+                    const pStartY = startY + Math.sin(angle) * radius;
+                    const pEndX = endX + (Math.random() - 0.5) * 50;
+                    const pEndY = endY + (Math.random() - 0.5) * 50;
+                    p.style.left = `${pStartX}px`;
+                    p.style.top = `${pStartY}px`;
+                    setTimeout(() => {
+                        p.style.transition = `transform ${0.5 + Math.random() * 0.5}s ease-out, opacity 1s ease-out`;
+                        p.style.left = `${pEndX}px`;
+                        p.style.top = `${pEndY}px`;
+                    }, 10);
+                }
+                setTimeout(() => {
+                    container.remove();
+                    if(onComplete) onComplete();
+                }, 1000);
+            }
+
+            // --- DATA MANAGEMENT ---
+            const getStudents = () => JSON.parse(localStorage.getItem('students')) || [];
+            const saveStudents = (students) => localStorage.setItem('students', JSON.stringify(students));
+            let students = getStudents();
+
+            // --- RENDER TABLE ---
+            const renderTable = () => {
+                studentTableBody.innerHTML = '';
+                students.forEach((student) => {
+                    const row = document.createElement('tr');
+                    row.dataset.id = student.id;
+                    row.innerHTML = `
+                        <td>${student.name}</td>
+                        <td>${student.regNo}</td>
+                        <td>${student.dept}</td>
+                        <td>${student.year}</td>
+                        <td>${student.marks}%</td>
+                        <td>
+                            <button class="action-btn edit-btn" data-id="${student.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25Z"></path></svg>
+                            </button>
+                            <button class="action-btn delete-btn" data-id="${student.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"></path></svg>
+                            </button>
+                        </td>
+                    `;
+                    studentTableBody.appendChild(row);
+                });
+            };
+
+            // --- FORM SUBMISSION (CREATE & UPDATE) ---
+            studentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const studentId = studentIdInput.value;
+                const startRect = formBtn.getBoundingClientRect();
+                const startX = startRect.left + startRect.width / 2;
+                const startY = startRect.top + startRect.height / 2;
+                let endX, endY;
+
+                const completeAction = () => {
+                    const studentData = {
+                        name: document.getElementById('name').value,
+                        regNo: document.getElementById('regNo').value,
+                        dept: document.getElementById('dept').value,
+                        year: document.getElementById('year').value,
+                        marks: document.getElementById('marks').value,
+                    };
+
+                    if (studentId) {
+                        students = students.map(s => s.id == studentId ? { id: s.id, ...studentData } : s);
+                    } else {
+                        studentData.id = Date.now();
+                        students.push(studentData);
+                    }
+                    
+                    saveStudents(students);
+                    renderTable();
+                    
+                    const targetRow = studentTableBody.querySelector(`tr[data-id='${studentId || studentData.id}']`);
+                    if (targetRow) {
+                        targetRow.classList.add('highlight-row');
+                        setTimeout(() => targetRow.classList.remove('highlight-row'), 2000);
+                    }
+
+                    resetForm();
+                };
+
+                if (studentId) {
+                    const targetRow = studentTableBody.querySelector(`tr[data-id='${studentId}']`);
+                    const endRect = targetRow.getBoundingClientRect();
+                    endX = endRect.left + endRect.width / 2;
+                    endY = endRect.top + endRect.height / 2;
+                } else {
+                    const tableRect = studentTableBody.getBoundingClientRect();
+                    endX = tableRect.left + tableRect.width / 2;
+                    endY = tableRect.top + tableRect.height;
+                }
+                
+                createFlyingOrb(startX, startY, endX, endY, completeAction);
+            });
+
+            // --- ACTIONS (EDIT & DELETE) ---
+            studentTableBody.addEventListener('click', (e) => {
+                const btn = e.target.closest('.action-btn');
+                if (!btn) return;
+                
+                const id = btn.dataset.id;
+                const row = btn.closest('tr');
+
+                if (btn.classList.contains('edit-btn')) {
+                    const studentToEdit = students.find(s => s.id == id);
+                    const formRect = studentForm.getBoundingClientRect();
+                    const rowRect = row.getBoundingClientRect();
+                    const startX = rowRect.left + rowRect.width / 2;
+                    const startY = rowRect.top + rowRect.height / 2;
+                    const endX = formRect.left + formRect.width / 2;
+                    const endY = formRect.top + formRect.height / 2;
+
+                    createParticleStream(startX, startY, endX, endY, () => {
+                        studentIdInput.value = studentToEdit.id;
+                        document.getElementById('name').value = studentToEdit.name;
+                        document.getElementById('regNo').value = studentToEdit.regNo;
+                        document.getElementById('dept').value = studentToEdit.dept;
+                        document.getElementById('year').value = studentToEdit.year;
+                        document.getElementById('marks').value = studentToEdit.marks;
+                        
+                        formTitle.textContent = 'Edit Student Record';
+                        formBtn.textContent = 'Update Student';
+                        formBtn.style.background = `linear-gradient(45deg, var(--color-warning), #fca74e)`;
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                }
+
+                if (btn.classList.contains('delete-btn')) {
+                    row.classList.add('fly-out');
+                    row.addEventListener('animationend', () => {
+                        students = students.filter(s => s.id != id);
+                        saveStudents(students);
+                        renderTable();
+                    });
+                }
+            });
+
+            function resetForm() {
+                studentForm.reset();
+                studentIdInput.value = '';
+                formTitle.textContent = 'Add New Student';
+                formBtn.textContent = 'Add Student';
+                formBtn.style.background = `linear-gradient(45deg, var(--color-primary), var(--color-success))`;
+            }
+
+            // --- Initial render ---
+            renderTable();
+        });
+    </script>
+</body>
+</html>
